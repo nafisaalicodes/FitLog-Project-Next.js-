@@ -2,140 +2,264 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { useEffect, useState } from "react";
 
 import { usePlan } from "@/context/PlanContext";
 
 export default function MyPlanPage() {
   const {
-    todayPlan,
-    savedWorkouts,
-    removeFromTodayPlan,
-    removeFromSaved,
-  } = usePlan();
+  todayPlan,
+  savedWorkouts,
+  loading,
+  removeFromTodayPlan,
+  removeFromSaved,
+} = usePlan();
+
+  const [activeTab, setActiveTab] = useState<"plan" | "saved">("plan");
+  const [completedWorkouts, setCompletedWorkouts] = useState<number[]>([]);
+
+  
+
+  // Current list
+  const currentWorkouts =
+    activeTab === "plan" ? todayPlan : savedWorkouts;
+
+  // Metrics
+  const totalMinutes = todayPlan.reduce(
+    (total, workout) => total + workout.duration,
+    0
+  );
+
+  const totalCalories = todayPlan.reduce(
+    (total, workout) => total + workout.caloriesBurned,
+    0
+  );
+
+  // Mark as Done
+  const handleMarkAsDone = (id: number) => {
+    setCompletedWorkouts((prev) =>
+      prev.includes(id)
+        ? prev.filter((workoutId) => workoutId !== id)
+        : [...prev, id]
+    );
+  };
 
   return (
-    <section className="min-h-screen bg-slate-50 py-10">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <main className="min-h-screen bg-[#0b0c0f] px-4 py-8 text-white sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-[1400px]">
 
-        <h1 className="text-3xl font-bold text-slate-900">
-          My Plan
-        </h1>
+        {/* Header */}
+        <div className="mb-7">
+          <h1 className="text-2xl font-black uppercase tracking-tight sm:text-3xl">
+            MY PLAN
+          </h1>
 
-        {/* Today's Plan */}
-        <div className="mt-10">
-          <h2 className="text-2xl font-bold text-slate-900">
+          <p className="mt-1 text-xs text-gray-500">
+            Cap of five lifts for today. Finish them, then load more.
+          </p>
+        </div>
+
+        {/* Metrics Summary */}
+        <div className="mb-5 grid grid-cols-1 overflow-hidden rounded-lg border border-[#25262b] bg-[#15161b] sm:grid-cols-3">
+
+          {/* Exercises */}
+          <div className="border-b border-[#25262b] p-4 sm:border-b-0 sm:border-r">
+            <p className="text-[9px] text-gray-500">
+              Exercises
+            </p>
+
+            <p className="mt-1 text-2xl font-black">
+              {todayPlan.length}
+            </p>
+          </div>
+
+          {/* Minutes */}
+          <div className="border-b border-[#25262b] p-4 sm:border-b-0 sm:border-r">
+            <p className="text-[9px] text-gray-500">
+              Minutes
+            </p>
+
+            <p className="mt-1 text-2xl font-black">
+              {totalMinutes}
+            </p>
+          </div>
+
+          {/* Calories */}
+          <div className="p-4">
+            <p className="text-[9px] text-gray-500">
+              Calories
+            </p>
+
+            <p className="mt-1 text-2xl font-black">
+              {totalCalories}
+            </p>
+          </div>
+        </div>
+
+        {/* Tabs */}
+        <div className="mb-4 flex w-fit rounded-md border border-[#25262b] bg-[#15161b] p-1">
+
+          <button
+            onClick={() => setActiveTab("plan")}
+            className={`rounded px-4 py-1.5 text-[9px] font-bold transition ${
+              activeTab === "plan"
+                ? "bg-[#25262b] text-white"
+                : "text-gray-500 hover:text-white"
+            }`}
+          >
             Today&apos;s Plan
-          </h2>
+          </button>
 
-          {todayPlan.length === 0 ? (
-            <p className="mt-4 text-slate-500">
-              No workouts added to today&apos;s plan yet.
-            </p>
-          ) : (
-            <div className="mt-5 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {todayPlan.map((workout) => (
-                <div
-                  key={workout.id}
-                  className="overflow-hidden rounded-2xl bg-white shadow-sm"
-                >
-                  <div className="relative h-48">
-                    <Image
-                      src={workout.image}
-                      alt={workout.name}
-                      fill
-                      className="object-cover"
-                    />
-                  </div>
-
-                  <div className="p-5">
-                    <h3 className="font-bold text-slate-900">
-                      {workout.name}
-                    </h3>
-
-                    <p className="mt-2 text-sm text-slate-500">
-                      {workout.description}
-                    </p>
-
-                    <div className="mt-4 flex gap-2">
-                      <Link
-                        href={`/workout/${workout.id}`}
-                        className="flex-1 rounded-lg bg-slate-900 px-4 py-2 text-center text-sm font-semibold text-white"
-                      >
-                        View Details
-                      </Link>
-
-                      <button
-                        onClick={() =>
-                          removeFromTodayPlan(workout.id)
-                        }
-                        className="rounded-lg border border-red-200 px-4 py-2 text-sm font-semibold text-red-500"
-                      >
-                        Remove
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* Saved */}
-        <div className="mt-14">
-          <h2 className="text-2xl font-bold text-slate-900">
+          <button
+            onClick={() => setActiveTab("saved")}
+            className={`rounded px-4 py-1.5 text-[9px] font-bold transition ${
+              activeTab === "saved"
+                ? "bg-[#25262b] text-white"
+                : "text-gray-500 hover:text-white"
+            }`}
+          >
             Saved
-          </h2>
+          </button>
 
-          {savedWorkouts.length === 0 ? (
-            <p className="mt-4 text-slate-500">
-              No saved workouts yet.
+        </div>
+
+        {/* Loading */}
+        {loading ? (
+          <div className="flex min-h-[260px] items-center justify-center rounded-lg border border-[#25262b] bg-[#0d0e11]">
+            <p className="text-xs text-gray-500">
+              Loading workouts…
             </p>
-          ) : (
-            <div className="mt-5 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {savedWorkouts.map((workout) => (
+          </div>
+        ) : currentWorkouts.length === 0 ? (
+
+          /* Empty State */
+          <div className="flex min-h-[260px] flex-col items-center justify-center rounded-lg border border-dashed border-[#25262b] bg-[#0d0e11] px-4 text-center">
+
+            <h2 className="text-sm font-black uppercase">
+              NOTHING HERE YET
+            </h2>
+
+            <p className="mt-2 text-[9px] text-gray-500">
+              Browse the library and add a lift to get today moving.
+            </p>
+
+            <Link
+              href="/"
+              className="mt-4 rounded-full bg-[#ccff00] px-5 py-2 text-[9px] font-bold text-black transition hover:bg-[#b8e600]"
+            >
+              Go to workouts
+            </Link>
+
+          </div>
+        ) : (
+
+          /* Workout List */
+          <div className="space-y-3">
+
+            {currentWorkouts.map((workout) => {
+              const isCompleted = completedWorkouts.includes(workout.id);
+
+              return (
                 <div
                   key={workout.id}
-                  className="overflow-hidden rounded-2xl bg-white shadow-sm"
+                  className={`overflow-hidden rounded-lg border bg-[#15161b] transition ${
+                    isCompleted
+                      ? "border-[#ccff00]/40 opacity-70"
+                      : "border-[#25262b]"
+                  }`}
                 >
-                  <div className="relative h-48">
-                    <Image
-                      src={workout.image}
-                      alt={workout.name}
-                      fill
-                      className="object-cover"
-                    />
-                  </div>
 
-                  <div className="p-5">
-                    <h3 className="font-bold text-slate-900">
-                      {workout.name}
-                    </h3>
+                  <div className="flex flex-col sm:flex-row">
 
-                    <div className="mt-4 flex gap-2">
-                      <Link
-                        href={`/workout/${workout.id}`}
-                        className="flex-1 rounded-lg bg-slate-900 px-4 py-2 text-center text-sm font-semibold text-white"
-                      >
-                        View Details
-                      </Link>
+                    {/* Thumbnail */}
+                    <div className="relative h-48 w-full shrink-0 sm:h-auto sm:w-52">
+                      <Image
+                        src={workout.image}
+                        alt={workout.name}
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
 
-                      <button
-                        onClick={() =>
-                          removeFromSaved(workout.id)
-                        }
-                        className="rounded-lg border border-red-200 px-4 py-2 text-sm font-semibold text-red-500"
-                      >
-                        Remove
-                      </button>
+                    {/* Content */}
+                    <div className="flex flex-1 flex-col justify-between p-4">
+
+                      <div>
+                        <div className="flex items-start justify-between gap-3">
+
+                          <div>
+                            <h3 className="text-sm font-black uppercase">
+                              {workout.name}
+                            </h3>
+
+                            <p className="mt-1 text-[10px] text-gray-500">
+                              {workout.equipment}
+                            </p>
+                          </div>
+
+
+                        </div>
+
+                        {/* Stats */}
+                        <div className="mt-4 flex flex-wrap items-center gap-4 text-[9px] text-gray-500">
+
+                          <span>
+                            ◷ {workout.duration} min
+                          </span>
+
+                          <span>
+                            🔥 {workout.caloriesBurned} kcal
+                          </span>
+
+                          <span>
+                            ★ {workout.rating}
+                          </span>
+
+                        </div>
+                      </div>
+
+                      {/* Actions */}
+                      <div className="mt-5 flex items-center justify-end gap-2">
+
+                        <Link
+                          href={`/workout/${workout.id}`}
+                          className="rounded-md bg-[#25262b] px-4 py-2 text-[9px] font-bold text-white transition hover:bg-[#303138]"
+                        >
+                          View Details
+                        </Link>
+                       {activeTab === "plan" && (
+                       <button
+                       onClick={() => handleMarkAsDone(workout.id)}
+                       className="rounded-md bg-[#ccff00] px-4 py-2 text-[9px] font-bold text-black transition hover:bg-[#b8e600]"
+                       >
+                      {isCompleted ? "Done ✓" : "Mark as Done"}
+                       </button>
+                       )}
+                        {/* Remove */}
+  <button
+    onClick={() =>
+      activeTab === "plan"
+        ? removeFromTodayPlan(workout.id)
+        : removeFromSaved(workout.id)
+    }
+    className="ml-1 flex items-center justify-center text-lg leading-none text-gray-500 transition hover:text-red-400"
+    aria-label={`Remove ${workout.name}`}
+  >
+    ×
+  </button>
+
+                      </div>
+
                     </div>
                   </div>
                 </div>
-              ))}
-            </div>
-          )}
-        </div>
+              );
+            })}
+
+          </div>
+        )}
 
       </div>
-    </section>
+    </main>
   );
 }

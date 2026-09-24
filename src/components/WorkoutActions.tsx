@@ -2,7 +2,6 @@
 
 import { Workout } from "@/Types/Workout";
 import { usePlan } from "@/context/PlanContext";
-import { toast } from "react-toastify";
 
 interface WorkoutActionsProps {
   workout: Workout;
@@ -15,14 +14,10 @@ export default function WorkoutActions({
 
   const handleAddToPlan = () => {
     addToTodayPlan(workout);
-
-    toast.success("Added to today's plan");
   };
 
   const handleSave = () => {
     saveForLater(workout);
-
-    toast.success("Saved for later");
   };
 
   return (

@@ -15,33 +15,34 @@ export default function Navbar() {
 
         {/* Logo */}
         <Link
-  href="/"
-  className="flex items-center gap-2"
->
-  <Image
-    src="/assets/logo.png"
-    alt="FitLog"
-    width={70}
-    height={24}
-    className="h-auto w-auto"
-  />
-   <span className="text-sm font-bold tracking-wide text-white">
-    FITLOG
-  </span>
-</Link>
+          href="/"
+          className="flex items-center gap-2"
+        >
+          <Image
+            src="/assets/logo.png"
+            alt="FitLog"
+            width={70}
+            height={24}
+            className="h-auto w-auto"
+          />
+
+          <span className="text-sm font-bold tracking-wide text-white">
+            FITLOG
+          </span>
+        </Link>
 
         {/* Navigation Links */}
         <div className="flex items-center gap-3">
 
-          {/* Workout */}
+          {/* Workouts */}
           <Link
-         href="/workout"
-         className={`px-4 py-2 text-[10px] transition ${
-         pathname === "/workout" || pathname === "/"
-          ? "rounded-md bg-[#2a2b2f] font-semibold text-[#ccff00]"
-          : "text-gray-400 hover:text-white"
-        }`}
-         >
+            href="/workout"
+            className={`px-4 py-2 text-[10px] transition ${
+              pathname === "/workout" || pathname === "/"
+                ? "rounded-md bg-[#2a2b2f] font-semibold text-[#ccff00]"
+                : "text-gray-400 hover:text-white"
+            }`}
+          >
             Workouts
           </Link>
 
@@ -55,13 +56,13 @@ export default function Navbar() {
             }`}
           >
             My Plan
+
             {todayPlan.length > 0 && (
-              <span className="ml-1 rounded-full bg-orange-500 px-2 py-0.5 text-xs text-white">
+              <span className="ml-1 rounded-full bg-[#ccff00] px-2 py-0.5 text-xs font-bold text-black">
                 {todayPlan.length}
               </span>
             )}
           </Link>
-
         </div>
 
         {/* Right Side Badges */}
@@ -74,9 +75,9 @@ export default function Navbar() {
           >
             <span>Plan</span>
 
-           <span className="flex h-4 min-w-4 items-center justify-center rounded-full bg-[#ccff00] px-1 text-[9px] font-bold text-black">
-      {todayPlan.length}
-    </span>
+            <span className="flex h-4 min-w-4 items-center justify-center rounded-full bg-[#ccff00] px-1 text-[9px] font-bold text-black">
+              {todayPlan.length}
+            </span>
           </Link>
 
           {/* Saved */}
@@ -86,13 +87,12 @@ export default function Navbar() {
           >
             <span>Saved</span>
 
-             <span className="flex h-4 min-w-4 items-center justify-center rounded-full border border-[#55565b] px-1 text-[9px] text-gray-300">
-      {savedWorkouts.length}
-    </span>
+            <span className="flex h-4 min-w-4 items-center justify-center rounded-full border border-[#55565b] px-1 text-[9px] text-gray-300">
+              {savedWorkouts.length}
+            </span>
           </Link>
 
         </div>
-
       </div>
     </nav>
   );
