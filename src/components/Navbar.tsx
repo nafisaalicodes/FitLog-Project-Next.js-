@@ -1,46 +1,92 @@
-import Link from "next/link";
+"use client";
 
-const Navbar = () => {
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import Image from "next/image";
+
+export default function Navbar() {
+  const pathname = usePathname();
+
   return (
-    <nav className="w-full border-b border-gray-200 bg-white">
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
+    <nav className="border-b border-[#202126] bg-[#0b0c0f]">
+      <div className="mx-auto flex h-12 max-w-[1400px] items-center justify-between px-5">
 
         {/* Logo */}
-        <Link href="/" className="text-2xl font-bold">
-          FITLOG
-        </Link>
+        <Link
+  href="/"
+  className="flex items-center gap-2"
+>
+  <Image
+    src="/assets/logo.png"
+    alt="FitLog"
+    width={70}
+    height={24}
+    className="h-auto w-auto"
+  />
+   <span className="text-sm font-bold tracking-wide text-white">
+    FITLOG
+  </span>
+</Link>
 
         {/* Navigation Links */}
-        <div className="hidden items-center gap-8 md:flex">
+        <div className="flex items-center gap-3">
+
+          {/* Workout */}
           <Link
-            href="/workout"
-            className="font-medium text-gray-500 transition hover:text-black"
-          >
-            Workout
+         href="/workout"
+         className={`px-4 py-2 text-[10px] transition ${
+         pathname === "/workout" || pathname === "/"
+          ? "rounded-md bg-[#2a2b2f] font-semibold text-[#ccff00]"
+          : "text-gray-400 hover:text-white"
+        }`}
+         >
+            Workouts
           </Link>
 
+          {/* My Plan */}
           <Link
             href="/my-plan"
-            className="font-medium text-gray-500 transition hover:text-black"
+            className={`rounded-full px-4 py-1.5 text-[10px] transition ${
+              pathname === "/my-plan"
+                ? "bg-[#ccff00] font-semibold text-black"
+                : "text-gray-400 hover:text-white"
+            }`}
           >
             My Plan
           </Link>
+
         </div>
 
-        {/* Status Badges */}
-        <div className="flex items-center gap-2">
-          <div className="rounded-full bg-[#ccff00] px-4 py-2 text-sm font-semibold">
-            Plan 0
-          </div>
+        {/* Right Side Badges */}
+        <div className="flex items-center gap-4 text-[10px]">
 
-          <div className="rounded-full border border-black px-4 py-2 text-sm font-semibold">
-            Saved 0
-          </div>
+          {/* Plan */}
+          <Link
+            href="/my-plan"
+            className="flex items-center gap-1.5 text-gray-400 hover:text-white"
+          >
+            <span>Plan</span>
+
+            <span className="flex h-4 min-w-4 items-center justify-center rounded-full bg-[#ccff00] px-1 text-[9px] font-bold text-black">
+              0
+            </span>
+          </Link>
+
+          {/* Saved */}
+          <Link
+            href="/my-plan"
+            className="flex items-center gap-1.5 text-gray-400 hover:text-white"
+          >
+            <span>Saved</span>
+
+            <span className="flex h-4 min-w-4 items-center justify-center rounded-full border border-[#55565b] px-1 text-[9px] text-gray-300">
+              0
+            </span>
+          </Link>
+
         </div>
 
       </div>
     </nav>
   );
-};
-
-export default Navbar;
+}
