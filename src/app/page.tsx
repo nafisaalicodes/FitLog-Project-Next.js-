@@ -1,7 +1,8 @@
 import Link from "next/link";
 import Image from "next/image";
 import WorkoutCard from "@/components/WorkoutCard";
-import type { Workout } from "@/types/workout";
+import type { Workout } from "@/Types/Workout";
+import Footer from "@/components/Footer";
 
 export default async function Home() {
   const response = await fetch(
@@ -92,6 +93,7 @@ export default async function Home() {
 
   </div>
 </section>
+   <Footer />
 
     </main>
   );

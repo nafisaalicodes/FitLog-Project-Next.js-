@@ -3,9 +3,11 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
+import { usePlan } from "@/context/PlanContext";
 
 export default function Navbar() {
   const pathname = usePathname();
+  const { todayPlan, savedWorkouts } = usePlan();
 
   return (
     <nav className="border-b border-[#202126] bg-[#0b0c0f]">
@@ -53,6 +55,11 @@ export default function Navbar() {
             }`}
           >
             My Plan
+            {todayPlan.length > 0 && (
+              <span className="ml-1 rounded-full bg-orange-500 px-2 py-0.5 text-xs text-white">
+                {todayPlan.length}
+              </span>
+            )}
           </Link>
 
         </div>
@@ -67,9 +74,9 @@ export default function Navbar() {
           >
             <span>Plan</span>
 
-            <span className="flex h-4 min-w-4 items-center justify-center rounded-full bg-[#ccff00] px-1 text-[9px] font-bold text-black">
-              0
-            </span>
+           <span className="flex h-4 min-w-4 items-center justify-center rounded-full bg-[#ccff00] px-1 text-[9px] font-bold text-black">
+      {todayPlan.length}
+    </span>
           </Link>
 
           {/* Saved */}
@@ -79,9 +86,9 @@ export default function Navbar() {
           >
             <span>Saved</span>
 
-            <span className="flex h-4 min-w-4 items-center justify-center rounded-full border border-[#55565b] px-1 text-[9px] text-gray-300">
-              0
-            </span>
+             <span className="flex h-4 min-w-4 items-center justify-center rounded-full border border-[#55565b] px-1 text-[9px] text-gray-300">
+      {savedWorkouts.length}
+    </span>
           </Link>
 
         </div>
