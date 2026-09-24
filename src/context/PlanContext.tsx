@@ -4,6 +4,7 @@ import {
   createContext,
   useContext,
   useEffect,
+  useRef,
   useState,
   type ReactNode,
 } from "react";
@@ -15,6 +16,7 @@ interface PlanContextType {
   todayPlan: Workout[];
   savedWorkouts: Workout[];
   loading: boolean;
+
   addToTodayPlan: (workout: Workout) => void;
   saveForLater: (workout: Workout) => void;
   removeFromTodayPlan: (id: number) => void;
@@ -30,51 +32,58 @@ export function PlanProvider({
 }: {
   children: ReactNode;
 }) {
-  const [todayPlan, setTodayPlan] = useState<Workout[]>(() => {
-  if (typeof window === "undefined") {
-    return [];
-  }
+  const [todayPlan, setTodayPlan] = useState<Workout[]>([]);
+  const [savedWorkouts, setSavedWorkouts] = useState<Workout[]>([]);
+  const [loading] = useState(false);
 
-  const savedPlan = localStorage.getItem("fitlog-today-plan");
+  const loadedRef = useRef(false);
 
-  return savedPlan ? JSON.parse(savedPlan) : [];
-});
+  // Load data from localStorage
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      const savedPlan = localStorage.getItem("fitlog-today-plan");
+      const savedLater = localStorage.getItem("fitlog-saved");
 
-const [savedWorkouts, setSavedWorkouts] = useState<Workout[]>(() => {
-  if (typeof window === "undefined") {
-    return [];
-  }
+      if (savedPlan) {
+        setTodayPlan(JSON.parse(savedPlan));
+      }
 
-  const savedLater = localStorage.getItem("fitlog-saved");
+      if (savedLater) {
+        setSavedWorkouts(JSON.parse(savedLater));
+      }
 
-  return savedLater ? JSON.parse(savedLater) : [];
-});
+      loadedRef.current = true;
+    }, 0);
 
-const [loading] = useState(false);
+    return () => clearTimeout(timer);
+  }, []);
+
   // Save today's plan
   useEffect(() => {
-    if (!loading) {
-      localStorage.setItem(
-        "fitlog-today-plan",
-        JSON.stringify(todayPlan)
-      );
-    }
-  }, [todayPlan, loading]);
+    if (!loadedRef.current) return;
+
+    localStorage.setItem(
+      "fitlog-today-plan",
+      JSON.stringify(todayPlan)
+    );
+  }, [todayPlan]);
 
   // Save saved workouts
   useEffect(() => {
-    if (!loading) {
-      localStorage.setItem(
-        "fitlog-saved",
-        JSON.stringify(savedWorkouts)
-      );
-    }
-  }, [savedWorkouts, loading]);
+    if (!loadedRef.current) return;
+
+    localStorage.setItem(
+      "fitlog-saved",
+      JSON.stringify(savedWorkouts)
+    );
+  }, [savedWorkouts]);
 
   // Add workout to today's plan
   const addToTodayPlan = (workout: Workout) => {
     if (todayPlan.length >= 5) {
-      toast.info("You can only add five workouts to today's plan.");
+      toast.info(
+        "You can only add five workouts to today's plan."
+      );
       return;
     }
 
@@ -87,9 +96,10 @@ const [loading] = useState(false);
       return;
     }
 
-    const updatedPlan = [...todayPlan, workout];
-
-    setTodayPlan(updatedPlan);
+    setTodayPlan((currentPlan) => [
+      ...currentPlan,
+      workout,
+    ]);
 
     toast.success("Added to today's plan.");
   };
@@ -105,9 +115,10 @@ const [loading] = useState(false);
       return;
     }
 
-    const updatedSaved = [...savedWorkouts, workout];
-
-    setSavedWorkouts(updatedSaved);
+    setSavedWorkouts((currentSaved) => [
+      ...currentSaved,
+      workout,
+    ]);
 
     toast.success("Saved for later.");
   };
@@ -151,7 +162,9 @@ export function usePlan() {
   const context = useContext(PlanContext);
 
   if (!context) {
-    throw new Error("usePlan must be used inside PlanProvider");
+    throw new Error(
+      "usePlan must be used inside PlanProvider"
+    );
   }
 
   return context;
