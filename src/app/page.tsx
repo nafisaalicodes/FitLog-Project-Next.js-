@@ -1,4 +1,4 @@
-import Link from "next/link";
+
 import Image from "next/image";
 import WorkoutCard from "@/components/WorkoutCard";
 import type { Workout } from "@/Types/Workout";
