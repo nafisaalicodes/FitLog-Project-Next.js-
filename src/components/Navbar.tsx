@@ -18,7 +18,7 @@ export default function Navbar() {
     <nav className="border-b border-[#202126] bg-[#0b0c0f]">
       <div className="mx-auto flex h-12 max-w-[1400px] items-center justify-between px-5">
 
-        {/* Logo */}
+       
         <Link
           href="/"
           className="flex items-center gap-2"
@@ -36,10 +36,10 @@ export default function Navbar() {
           </span>
         </Link>
 
-        {/* Navigation Links */}
+        
         <div className="flex items-center gap-3">
 
-          {/* Workouts */}
+         
           <Link
             href="/"
             className={`rounded-md px-4 py-2 text-[10px] transition ${
@@ -51,7 +51,7 @@ export default function Navbar() {
             Workouts
           </Link>
 
-          {/* My Plan */}
+          
           <Link
             href="/my-plan"
             className={`rounded-md px-4 py-2 text-[10px] transition ${
@@ -64,10 +64,10 @@ export default function Navbar() {
           </Link>
         </div>
 
-        {/* Right Side Badges */}
+        
         <div className="flex items-center gap-4 text-[10px]">
 
-          {/* Plan */}
+         
           <Link
             href="/my-plan"
             className="flex items-center gap-1.5 text-gray-400 transition hover:text-white"
@@ -79,7 +79,7 @@ export default function Navbar() {
             </span>
           </Link>
 
-          {/* Saved */}
+         
           <Link
             href="/my-plan"
             className="flex items-center gap-1.5 text-gray-400 transition hover:text-white"

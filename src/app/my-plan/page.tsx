@@ -22,11 +22,11 @@ export default function MyPlanPage() {
   const [completedWorkouts, setCompletedWorkouts] = useState<number[]>([]);
   const [sortBy, setSortBy] = useState<SortOption>("duration");
 
-  // Current list
+  
   const currentWorkouts =
     activeTab === "plan" ? todayPlan : savedWorkouts;
 
-  // Sort current list
+  
   const sortedWorkouts = [...currentWorkouts].sort((a, b) => {
     if (sortBy === "duration") {
       return b.duration - a.duration;
@@ -43,7 +43,7 @@ export default function MyPlanPage() {
     return 0;
   });
 
-  // Metrics
+
   const totalMinutes = todayPlan.reduce(
     (total, workout) => total + workout.duration,
     0
@@ -70,7 +70,7 @@ export default function MyPlanPage() {
   }
 };
 
-  // Remove workout
+  
  const handleRemove = (
   id: number,
   tab: "plan" | "saved"
@@ -90,7 +90,7 @@ export default function MyPlanPage() {
     <main className="min-h-screen bg-[#0b0c0f] px-4 py-8 text-white sm:px-6 lg:px-8">
       <div className="mx-auto max-w-[1400px]">
 
-        {/* Header */}
+        
         <div className="mb-7">
           <h1 className="text-2xl font-black uppercase tracking-tight sm:text-3xl">
             MY PLAN
@@ -101,10 +101,10 @@ export default function MyPlanPage() {
           </p>
         </div>
 
-        {/* Metrics Summary */}
+       
         <div className="mb-5 grid grid-cols-1 overflow-hidden rounded-lg border border-[#25262b] bg-[#15161b] sm:grid-cols-3">
 
-          {/* Exercises */}
+         
           <div className="border-b border-[#25262b] p-4 sm:border-b-0 sm:border-r">
             <p className="text-[9px] text-gray-500">
               Exercises
@@ -115,7 +115,7 @@ export default function MyPlanPage() {
             </p>
           </div>
 
-          {/* Minutes */}
+         
           <div className="border-b border-[#25262b] p-4 sm:border-b-0 sm:border-r">
             <p className="text-[9px] text-gray-500">
               Minutes
@@ -126,7 +126,7 @@ export default function MyPlanPage() {
             </p>
           </div>
 
-          {/* Calories */}
+          
           <div className="p-4">
             <p className="text-[9px] text-gray-500">
               Calories
@@ -138,10 +138,10 @@ export default function MyPlanPage() {
           </div>
         </div>
 
-        {/* Tabs + Sort */}
+        
         <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
 
-          {/* Tabs */}
+         
           <div className="flex w-fit rounded-md border border-[#25262b] bg-[#15161b] p-1">
 
             <button
@@ -168,7 +168,7 @@ export default function MyPlanPage() {
 
           </div>
 
-          {/* Sort */}
+         
           <div className="flex items-center gap-2">
             <span className="text-[9px] text-gray-500">
               Sort By
@@ -187,7 +187,7 @@ export default function MyPlanPage() {
                 <option value="rating">Rating</option>
               </select>
 
-              {/* Chevron */}
+            
               <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-[9px] text-gray-400">
                 ˅
               </span>
@@ -196,7 +196,7 @@ export default function MyPlanPage() {
 
         </div>
 
-       {/* Loading / Empty State / Workout List */}
+       
 {loading ? (
   <div className="flex min-h-[260px] items-center justify-center rounded-lg border border-[#25262b] bg-[#0d0e11]">
     <p className="text-xs text-gray-500">
@@ -224,7 +224,7 @@ export default function MyPlanPage() {
           </div>
         ) : (
 
-          /* Workout List */
+          
           <div className="space-y-3">
 
             {sortedWorkouts.map((workout) => {
@@ -244,7 +244,7 @@ export default function MyPlanPage() {
 
                   <div className="flex flex-col sm:flex-row">
 
-                    {/* Thumbnail */}
+                    
                     <div className="relative h-48 w-full shrink-0 sm:h-auto sm:w-52">
                       <Image
                         src={workout.image}
@@ -255,10 +255,10 @@ export default function MyPlanPage() {
                       />
                     </div>
 
-                    {/* Content */}
+                   
                     <div className="flex min-w-0 flex-1 items-center justify-between gap-6 p-4">
 
-                      {/* Workout Information */}
+                     
                       <div>
                         <div>
                           <h3
@@ -276,7 +276,7 @@ export default function MyPlanPage() {
                           </p>
                         </div>
 
-                        {/* Stats */}
+                       
                         <div className="mt-4 flex flex-wrap items-center gap-4 text-[9px] text-gray-500">
 
                           <span>
@@ -294,10 +294,10 @@ export default function MyPlanPage() {
                         </div>
                       </div>
 
-                      {/* Actions */}
+                      
                       <div className="flex shrink-0 items-center justify-end gap-2">
 
-                        {/* View Details */}
+                       
                         <Link
                           href={`/workout/${workout.id}`}
                           className="whitespace-nowrap rounded-full border border-[#30333a] px-4 py-2 text-[9px] font-medium text-white transition hover:border-[#55565b] hover:bg-[#202126]"
@@ -305,7 +305,7 @@ export default function MyPlanPage() {
                           View Details
                         </Link>
 
-                        {/* Mark as Done */}
+                        
                         {activeTab === "plan" && (
                           <button
                             onClick={() =>
@@ -323,7 +323,7 @@ export default function MyPlanPage() {
                           </button>
                         )}
 
-                       {/* Remove */}
+                       
 <button
   onClick={() =>
     handleRemove(

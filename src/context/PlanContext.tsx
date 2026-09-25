@@ -38,7 +38,7 @@ export function PlanProvider({
 
   const loadedRef = useRef(false);
 
-  // Load data from localStorage
+ 
   useEffect(() => {
     const timer = setTimeout(() => {
       const savedPlan = localStorage.getItem("fitlog-today-plan");
@@ -59,7 +59,7 @@ export function PlanProvider({
     return () => clearTimeout(timer);
   }, []);
 
-  // Save today's plan
+  
   useEffect(() => {
     if (!loadedRef.current) return;
 
@@ -69,7 +69,7 @@ export function PlanProvider({
     );
   }, [todayPlan]);
 
-  // Save saved workouts
+  
   useEffect(() => {
     if (!loadedRef.current) return;
 
@@ -79,7 +79,7 @@ export function PlanProvider({
     );
   }, [savedWorkouts]);
 
-  // Add workout to today's plan
+  
   const addToTodayPlan = (workout: Workout) => {
     if (todayPlan.length >= 5) {
       toast.info(
@@ -105,7 +105,7 @@ export function PlanProvider({
     toast.success("Added to today's plan.");
   };
 
-  // Save workout for later
+  
   const saveForLater = (workout: Workout) => {
     const alreadyExists = savedWorkouts.some(
       (item) => item.id === workout.id
@@ -124,7 +124,7 @@ export function PlanProvider({
     toast.success("Saved for later.");
   };
 
-  // Remove from today's plan
+
   const removeFromTodayPlan = (id: number) => {
     setTodayPlan((currentPlan) =>
       currentPlan.filter((item) => item.id !== id)
@@ -133,7 +133,7 @@ export function PlanProvider({
     toast.info("Removed from today's plan.");
   };
 
-  // Remove from saved
+  
   const removeFromSaved = (id: number) => {
     setSavedWorkouts((currentSaved) =>
       currentSaved.filter((item) => item.id !== id)

@@ -43,7 +43,7 @@ export default async function WorkoutDetailsPage({
       <div className="mx-auto max-w-7xl px-4  sm:px-6 lg:px-8">
         <div className="grid gap-10 lg:grid-cols-2">
 
-          {/* LEFT SIDE */}
+          
           <div>
             <div className="relative min-h-[400px] overflow-hidden rounded-2xl bg-slate-200 lg:min-h-[650px]">
               <Image
@@ -56,20 +56,20 @@ export default async function WorkoutDetailsPage({
             </div>
           </div>
 
-          {/* RIGHT SIDE */}
+          
           <div className="flex flex-col justify-center">
 
-            {/* Title */}
+          
             <h1 className="text-3xl font-bold uppercase tracking-wide text-white sm:text-4xl">
               {workout.name}
             </h1>
 
-            {/* Description */}
+            
             <p className="mt-4 text-base leading-7 text-gray-400">
               {workout.description}
             </p>
 
-            {/* Category Tags */}
+            
             <div className="mt-5 flex flex-wrap gap-2">
               {workout.muscleGroups.map((muscle) => (
                 <span
@@ -81,7 +81,7 @@ export default async function WorkoutDetailsPage({
               ))}
             </div>
 
-            {/* Key Specs */}
+           
             <div className="mt-8 overflow-hidden rounded-2xl border border-[#25262b] bg-[#15161b]">
              
               <div className="divide-y divide-[#25262b]">
@@ -122,7 +122,7 @@ export default async function WorkoutDetailsPage({
               </div>
             </div>
 
-            {/* Instructions */}
+            
             <div className="mt-8">
               <h2 className="text-xl font-bold text-white">
                 INSTRUCTIONS
@@ -146,7 +146,7 @@ export default async function WorkoutDetailsPage({
               </ol>
             </div>
 
-            {/* Buttons */}
+          
             <WorkoutActions workout={workout} />
 
           </div>
