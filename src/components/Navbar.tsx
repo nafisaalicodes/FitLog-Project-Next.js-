@@ -11,6 +11,9 @@ export default function Navbar() {
 
   const { todayPlan, savedWorkouts } = usePlan();
 
+  const isHomePage = pathname === "/";
+  const isMyPlanPage = pathname === "/my-plan";
+
   return (
     <nav className="border-b border-[#202126] bg-[#0b0c0f]">
       <div className="mx-auto flex h-12 max-w-[1400px] items-center justify-between px-5">
@@ -38,10 +41,10 @@ export default function Navbar() {
 
           {/* Workouts */}
           <Link
-            href="/workout"
-            className={`px-4 py-2 text-[10px] transition ${
-              pathname === "/workout" || pathname === "/"
-                ? "rounded-md bg-[#2a2b2f] font-semibold text-[#ccff00]"
+            href="/"
+            className={`rounded-md px-4 py-2 text-[10px] transition ${
+              isHomePage
+                ? "bg-[#2a2b2f] font-semibold text-[#ccff00]"
                 : "text-gray-400 hover:text-white"
             }`}
           >
@@ -51,19 +54,13 @@ export default function Navbar() {
           {/* My Plan */}
           <Link
             href="/my-plan"
-            className={`rounded-full px-4 py-1.5 text-[10px] transition ${
-              pathname === "/my-plan"
-                ? "bg-[#ccff00] font-semibold text-black"
-                : "text-gray-400 hover:text-white"
+            className={`rounded-md px-4 py-2 text-[10px] transition ${
+              isMyPlanPage
+                ? "bg-[#2a2b2f] font-semibold text-[#ccff00]"
+                : "text-[#ccff00] hover:text-white"
             }`}
           >
             My Plan
-
-            {todayPlan.length > 0 && (
-              <span className="ml-1 rounded-full bg-[#ccff00] px-2 py-0.5 text-xs font-bold text-black">
-                {todayPlan.length}
-              </span>
-            )}
           </Link>
         </div>
 
@@ -73,7 +70,7 @@ export default function Navbar() {
           {/* Plan */}
           <Link
             href="/my-plan"
-            className="flex items-center gap-1.5 text-gray-400 hover:text-white"
+            className="flex items-center gap-1.5 text-gray-400 transition hover:text-white"
           >
             <span>Plan</span>
 
@@ -85,7 +82,7 @@ export default function Navbar() {
           {/* Saved */}
           <Link
             href="/my-plan"
-            className="flex items-center gap-1.5 text-gray-400 hover:text-white"
+            className="flex items-center gap-1.5 text-gray-400 transition hover:text-white"
           >
             <span>Saved</span>
 

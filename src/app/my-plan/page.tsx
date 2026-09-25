@@ -2,27 +2,46 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { toast } from "react-toastify";
 
 import { usePlan } from "@/context/PlanContext";
 
+type SortOption = "duration" | "calories" | "rating";
+
 export default function MyPlanPage() {
   const {
-  todayPlan,
-  savedWorkouts,
-  loading,
-  removeFromTodayPlan,
-  removeFromSaved,
-} = usePlan();
+    todayPlan,
+    savedWorkouts,
+     loading,
+    removeFromTodayPlan,
+    removeFromSaved,
+  } = usePlan();
 
   const [activeTab, setActiveTab] = useState<"plan" | "saved">("plan");
   const [completedWorkouts, setCompletedWorkouts] = useState<number[]>([]);
-
-  
+  const [sortBy, setSortBy] = useState<SortOption>("duration");
 
   // Current list
   const currentWorkouts =
     activeTab === "plan" ? todayPlan : savedWorkouts;
+
+  // Sort current list
+  const sortedWorkouts = [...currentWorkouts].sort((a, b) => {
+    if (sortBy === "duration") {
+      return b.duration - a.duration;
+    }
+
+    if (sortBy === "calories") {
+      return b.caloriesBurned - a.caloriesBurned;
+    }
+
+    if (sortBy === "rating") {
+      return b.rating - a.rating;
+    }
+
+    return 0;
+  });
 
   // Metrics
   const totalMinutes = todayPlan.reduce(
@@ -35,14 +54,37 @@ export default function MyPlanPage() {
     0
   );
 
-  // Mark as Done
-  const handleMarkAsDone = (id: number) => {
+ const handleMarkAsDone = (id: number, name: string) => {
+  const isAlreadyCompleted = completedWorkouts.includes(id);
+
+  if (isAlreadyCompleted) {
     setCompletedWorkouts((prev) =>
-      prev.includes(id)
-        ? prev.filter((workoutId) => workoutId !== id)
-        : [...prev, id]
+      prev.filter((workoutId) => workoutId !== id)
     );
-  };
+
+    toast.info(`${name} marked as not done.`);
+  } else {
+    setCompletedWorkouts((prev) => [...prev, id]);
+
+    toast.success(`${name} marked as done.`);
+  }
+};
+
+  // Remove workout
+ const handleRemove = (
+  id: number,
+  tab: "plan" | "saved"
+) => {
+  if (tab === "plan") {
+    removeFromTodayPlan(id);
+  } else {
+    removeFromSaved(id);
+  }
+
+  setCompletedWorkouts((prev) =>
+    prev.filter((workoutId) => workoutId !== id)
+  );
+};
 
   return (
     <main className="min-h-screen bg-[#0b0c0f] px-4 py-8 text-white sm:px-6 lg:px-8">
@@ -68,7 +110,7 @@ export default function MyPlanPage() {
               Exercises
             </p>
 
-            <p className="mt-1 text-2xl font-black">
+            <p className="mt-1 text-2xl font-black text-[#ccff00]">
               {todayPlan.length}
             </p>
           </div>
@@ -96,43 +138,72 @@ export default function MyPlanPage() {
           </div>
         </div>
 
-        {/* Tabs */}
-        <div className="mb-4 flex w-fit rounded-md border border-[#25262b] bg-[#15161b] p-1">
+        {/* Tabs + Sort */}
+        <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
 
-          <button
-            onClick={() => setActiveTab("plan")}
-            className={`rounded px-4 py-1.5 text-[9px] font-bold transition ${
-              activeTab === "plan"
-                ? "bg-[#25262b] text-white"
-                : "text-gray-500 hover:text-white"
-            }`}
-          >
-            Today&apos;s Plan
-          </button>
+          {/* Tabs */}
+          <div className="flex w-fit rounded-md border border-[#25262b] bg-[#15161b] p-1">
 
-          <button
-            onClick={() => setActiveTab("saved")}
-            className={`rounded px-4 py-1.5 text-[9px] font-bold transition ${
-              activeTab === "saved"
-                ? "bg-[#25262b] text-white"
-                : "text-gray-500 hover:text-white"
-            }`}
-          >
-            Saved
-          </button>
+            <button
+              onClick={() => setActiveTab("plan")}
+              className={`rounded px-4 py-1.5 text-[9px] font-bold transition ${
+                activeTab === "plan"
+                  ? "bg-[#25262b] text-white"
+                  : "text-gray-500 hover:text-white"
+              }`}
+            >
+              Today&apos;s Plan
+            </button>
+
+            <button
+              onClick={() => setActiveTab("saved")}
+              className={`rounded px-4 py-1.5 text-[9px] font-bold transition ${
+                activeTab === "saved"
+                  ? "bg-[#25262b] text-white"
+                  : "text-gray-500 hover:text-white"
+              }`}
+            >
+              Saved
+            </button>
+
+          </div>
+
+          {/* Sort */}
+          <div className="flex items-center gap-2">
+            <span className="text-[9px] text-gray-500">
+              Sort By
+            </span>
+
+            <div className="relative">
+              <select
+                value={sortBy}
+                onChange={(e) =>
+                  setSortBy(e.target.value as SortOption)
+                }
+                className="appearance-none rounded-md border border-[#303138] bg-[#15161b] px-3 py-1.5 pr-7 text-[9px] text-white outline-none transition hover:border-[#55565b] focus:border-[#ccff00]"
+              >
+                <option value="duration">Duration</option>
+                <option value="calories">Calories</option>
+                <option value="rating">Rating</option>
+              </select>
+
+              {/* Chevron */}
+              <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-[9px] text-gray-400">
+                ˅
+              </span>
+            </div>
+          </div>
 
         </div>
 
-        {/* Loading */}
-        {loading ? (
-          <div className="flex min-h-[260px] items-center justify-center rounded-lg border border-[#25262b] bg-[#0d0e11]">
-            <p className="text-xs text-gray-500">
-              Loading workouts…
-            </p>
-          </div>
-        ) : currentWorkouts.length === 0 ? (
-
-          /* Empty State */
+       {/* Loading / Empty State / Workout List */}
+{loading ? (
+  <div className="flex min-h-[260px] items-center justify-center rounded-lg border border-[#25262b] bg-[#0d0e11]">
+    <p className="text-xs text-gray-500">
+      Loading workouts…
+    </p>
+  </div>
+) : sortedWorkouts.length === 0 ? (
           <div className="flex min-h-[260px] flex-col items-center justify-center rounded-lg border border-dashed border-[#25262b] bg-[#0d0e11] px-4 text-center">
 
             <h2 className="text-sm font-black uppercase">
@@ -156,8 +227,10 @@ export default function MyPlanPage() {
           /* Workout List */
           <div className="space-y-3">
 
-            {currentWorkouts.map((workout) => {
-              const isCompleted = completedWorkouts.includes(workout.id);
+            {sortedWorkouts.map((workout) => {
+              const isCompleted = completedWorkouts.includes(
+                workout.id
+              );
 
               return (
                 <div
@@ -177,27 +250,30 @@ export default function MyPlanPage() {
                         src={workout.image}
                         alt={workout.name}
                         fill
+                        sizes="(max-width: 640px) 100vw, 208px"
                         className="object-cover"
                       />
                     </div>
 
                     {/* Content */}
-                    <div className="flex flex-1 flex-col justify-between p-4">
+                    <div className="flex min-w-0 flex-1 items-center justify-between gap-6 p-4">
 
+                      {/* Workout Information */}
                       <div>
-                        <div className="flex items-start justify-between gap-3">
+                        <div>
+                          <h3
+                            className={`text-sm font-black uppercase ${
+                              isCompleted
+                                ? "line-through text-gray-500"
+                                : "text-white"
+                            }`}
+                          >
+                            {workout.name}
+                          </h3>
 
-                          <div>
-                            <h3 className="text-sm font-black uppercase">
-                              {workout.name}
-                            </h3>
-
-                            <p className="mt-1 text-[10px] text-gray-500">
-                              {workout.equipment}
-                            </p>
-                          </div>
-
-
+                          <p className="mt-1 text-[10px] text-gray-500">
+                            {workout.equipment}
+                          </p>
                         </div>
 
                         {/* Stats */}
@@ -219,37 +295,49 @@ export default function MyPlanPage() {
                       </div>
 
                       {/* Actions */}
-                      <div className="mt-5 flex items-center justify-end gap-2">
+                      <div className="flex shrink-0 items-center justify-end gap-2">
 
+                        {/* View Details */}
                         <Link
                           href={`/workout/${workout.id}`}
-                          className="rounded-md bg-[#25262b] px-4 py-2 text-[9px] font-bold text-white transition hover:bg-[#303138]"
+                          className="whitespace-nowrap rounded-full border border-[#30333a] px-4 py-2 text-[9px] font-medium text-white transition hover:border-[#55565b] hover:bg-[#202126]"
                         >
                           View Details
                         </Link>
-                       {activeTab === "plan" && (
-                       <button
-                       onClick={() => handleMarkAsDone(workout.id)}
-                       className="rounded-md bg-[#ccff00] px-4 py-2 text-[9px] font-bold text-black transition hover:bg-[#b8e600]"
-                       >
-                      {isCompleted ? "Done ✓" : "Mark as Done"}
-                       </button>
-                       )}
-                        {/* Remove */}
-  <button
-    onClick={() =>
-      activeTab === "plan"
-        ? removeFromTodayPlan(workout.id)
-        : removeFromSaved(workout.id)
-    }
-    className="ml-1 flex items-center justify-center text-lg leading-none text-gray-500 transition hover:text-red-400"
-    aria-label={`Remove ${workout.name}`}
-  >
-    ×
-  </button>
+
+                        {/* Mark as Done */}
+                        {activeTab === "plan" && (
+                          <button
+                            onClick={() =>
+                              handleMarkAsDone(
+                                workout.id,
+                                workout.name
+                              )
+                            }
+                            className="flex items-center gap-1 whitespace-nowrap rounded-full bg-[#ccff00] px-4 py-2 text-[9px] font-bold text-black transition hover:bg-[#b8e600]"
+                          >
+                            <span>✓</span>
+                            {isCompleted
+                              ? "Done"
+                              : "Mark as Done"}
+                          </button>
+                        )}
+
+                       {/* Remove */}
+<button
+  onClick={() =>
+    handleRemove(
+      workout.id,
+      activeTab
+    )
+  }
+  className="ml-1 flex h-7 w-5 shrink-0 items-center justify-center text-lg leading-none text-gray-500 transition hover:text-red-400"
+  aria-label={`Remove ${workout.name}`}
+>
+  ×
+</button>
 
                       </div>
-
                     </div>
                   </div>
                 </div>

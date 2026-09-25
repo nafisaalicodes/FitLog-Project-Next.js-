@@ -34,7 +34,7 @@ export function PlanProvider({
 }) {
   const [todayPlan, setTodayPlan] = useState<Workout[]>([]);
   const [savedWorkouts, setSavedWorkouts] = useState<Workout[]>([]);
-  const [loading] = useState(false);
+ const [loading, setLoading] = useState(true);
 
   const loadedRef = useRef(false);
 
@@ -53,6 +53,7 @@ export function PlanProvider({
       }
 
       loadedRef.current = true;
+       setLoading(false);
     }, 0);
 
     return () => clearTimeout(timer);
