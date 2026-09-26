@@ -17,7 +17,7 @@ export default async function Home() {
 
      
       <section className="px-7 py-9 sm:px-6 lg:px-8">
-        <div className="mx-auto flex max-w-[1400px] items-center justify-between overflow-hidden rounded-xl border border-[#25262b] bg-[#15161b] px-5 py-10 sm:px-8 sm:py-12 lg:px-16">
+        <div className="mx-auto flex max-w-[1400px] flex-col  items-center justify-between overflow-hidden rounded-xl border border-[#25262b] bg-[#15161b] px-5 py-10 sm:px-8 sm:py-12 md:flex-row lg:px-16">
 
          
           <div className="max-w-[600px]">
@@ -51,7 +51,7 @@ export default async function Home() {
           </div>
 
           
-          <div className="hidden h-[250px] w-[340px] shrink-0 items-center justify-center md:flex">
+          <div className="flex h-[200px] w-full shrink-0 items-center justify-center sm:h-[220px] md:h-[250px] md:w-[340px]">
             <Image
               src="/banner.png"
               alt="Workout illustration"
